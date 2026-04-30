@@ -20,6 +20,7 @@ interface AppContextType {
   updateServiceFormConfig: (serviceId: string, config: FormConfig) => Promise<void>;
   updateSettings: (newSettings: any) => Promise<void>;
   deleteLead: (id: string) => Promise<void>;
+  showToast: (message: string, type?: 'success' | 'error') => void;
   loading: boolean;
 }
 
