@@ -19,7 +19,7 @@ interface AppContextType {
   updateServices: (services: Service[]) => Promise<void>;
   updateServiceFormConfig: (serviceId: string, config: FormConfig) => Promise<void>;
   updateSettings: (newSettings: any) => Promise<void>;
-  showToast: (message: string, type?: 'success' | 'error') => void;
+  deleteLead: (id: string) => Promise<void>;
   loading: boolean;
 }
 
@@ -176,6 +176,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const deleteLead = async (id: string) => {
+    const { error } = await supabase
+      .from('leads')
+      .delete()
+      .eq('id', id);
+
+    if (!error) {
+      setLeads(leads.filter(l => l.id !== id));
+      showToast('Lead removido com sucesso!', 'success');
+    } else {
+      showToast('Erro ao remover lead.', 'error');
+    }
+  };
+
   const updateServices = async (newServices: Service[]) => {
     // Local update
     setServices(newServices);
@@ -225,6 +239,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       updateFormConfig,
       submitLead, 
       updateLeadStatus,
+      deleteLead,
       updateServices,
       updateServiceFormConfig,
       updateSettings,

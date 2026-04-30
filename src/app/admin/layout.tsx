@@ -41,7 +41,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Mobile Header */}
       <header className="glass mobile-header" style={{ 
         display: 'none', 
-        padding: '1rem 1.5rem', 
+        padding: '0.75rem 1.5rem', 
         justifyContent: 'space-between', 
         alignItems: 'center', 
         position: 'sticky', 
@@ -51,9 +51,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         borderRadius: 0
       }}>
         <h1 style={{ fontSize: '1.2rem', fontWeight: 800, margin: 0, color: 'var(--primary)' }}>MinhoClean Admin</h1>
-        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ color: 'var(--primary)' }}>
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <button 
+            onClick={() => {
+              logout();
+              router.push('/admin/login');
+            }}
+            style={{ color: '#ef4444', display: 'flex', alignItems: 'center', background: 'transparent', border: 'none', cursor: 'pointer' }}
+          >
+            <LogOut size={22} />
+          </button>
+          <button 
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+            style={{ color: 'var(--primary)', background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </header>
 
       <div style={{ display: 'flex', flex: 1, position: 'relative' }}>
@@ -69,11 +83,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           zIndex: 90,
           transition: 'transform 0.3s ease'
         }} id="admin-sidebar">
-          <div style={{ marginBottom: '2.5rem' }} className="sidebar-logo">
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--primary)', marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ marginBottom: '1.5rem' }} className="sidebar-logo">
+            <h2 style={{ fontSize: '1.3rem', fontWeight: 900, color: 'var(--primary)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               MinhoClean
             </h2>
-            <h2 style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.1em', marginBottom: '1.5rem' }}>Painel Administrativo</h2>
+            <h2 style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.1em', marginBottom: '1rem' }}>Painel Admin</h2>
             <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {menuItems.map((item) => {
                 const Icon = item.icon;
@@ -103,7 +117,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </nav>
           </div>
 
-          <div style={{ marginTop: 'auto' }}>
+          <div style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
             <button 
               onClick={() => {
                 logout();
@@ -130,7 +144,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </aside>
 
         {/* Content */}
-        <main style={{ flex: 1, padding: '3rem', overflowY: 'auto', backgroundColor: 'rgba(248, 250, 252, 0.4)' }} id="admin-main">
+        <main style={{ flex: 1, padding: '1.5rem 2rem', overflowY: 'auto', backgroundColor: 'rgba(248, 250, 252, 0.4)' }} id="admin-main">
           {children}
         </main>
       </div>

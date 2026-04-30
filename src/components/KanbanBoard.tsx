@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useApp } from '@/lib/store';
 import { Lead } from '@/lib/types';
-import { Clock, Phone, Mail, MapPin, X, ExternalLink, User, MessageCircle } from 'lucide-react';
+import { Clock, Phone, Mail, MapPin, X, ExternalLink, User, MessageCircle, Trash2 } from 'lucide-react';
 
 export default function KanbanBoard() {
-  const { leads, updateLeadStatus, services } = useApp();
+  const { leads, updateLeadStatus, deleteLead, services } = useApp();
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
 
@@ -39,7 +39,7 @@ export default function KanbanBoard() {
           onDrop={(e) => handleDrop(e, column.id)}
           style={{ 
             width: '320px', 
-            minHeight: '600px', 
+            minHeight: '500px', 
             display: 'flex', 
             flexDirection: 'column', 
             gap: '1rem',
@@ -88,6 +88,12 @@ export default function KanbanBoard() {
           lead={selectedLead} 
           service={services.find(s => s.id === selectedLead.serviceType)}
           onClose={() => setSelectedLead(null)} 
+          onDelete={() => {
+            if (confirm('Tem a certeza que deseja remover este pedido?')) {
+              deleteLead(selectedLead.id);
+              setSelectedLead(null);
+            }
+          }}
         />
       )}
     </div>
@@ -171,7 +177,7 @@ function KanbanCard({ lead, serviceName, onClick }: { lead: Lead, serviceName: s
   );
 }
 
-function LeadDetailModal({ lead, service, onClose }: { lead: Lead, service?: any, onClose: () => void }) {
+function LeadDetailModal({ lead, service, onClose, onDelete }: { lead: Lead, service?: any, onClose: () => void, onDelete: () => void }) {
   return (
     <div style={{ 
       position: 'fixed', 
@@ -261,23 +267,41 @@ function LeadDetailModal({ lead, service, onClose }: { lead: Lead, service?: any
         </div>
 
         {/* Footer Actions */}
-        <div style={{ padding: '1.5rem 2.5rem', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+        <div style={{ padding: '1.5rem 2.5rem', background: '#f8fafc', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <button 
-            onClick={onClose}
-            className="btn"
-            style={{ padding: '0.75rem 2rem', borderRadius: '0.75rem', fontWeight: 700, border: '1px solid #e2e8f0', background: 'white' }}
+            onClick={onDelete}
+            style={{ 
+              background: 'transparent', 
+              border: 'none', 
+              color: '#ef4444', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.5rem', 
+              fontWeight: 700, 
+              cursor: 'pointer',
+              padding: '0.5rem'
+            }}
           >
-            Fechar
+            <Trash2 size={18} /> Remover Pedido
           </button>
-          <a 
-            href={`https://wa.me/${lead.data.customer_phone?.replace(/\D/g, '')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-primary"
-            style={{ padding: '0.75rem 2rem', borderRadius: '0.75rem', fontWeight: 700, background: '#10b981', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-          >
-            <Phone size={18} /> Contactar via WhatsApp
-          </a>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <button 
+              onClick={onClose}
+              className="btn"
+              style={{ padding: '0.75rem 2rem', borderRadius: '0.75rem', fontWeight: 700, border: '1px solid #e2e8f0', background: 'white' }}
+            >
+              Fechar
+            </button>
+            <a 
+              href={`https://wa.me/${lead.data.customer_phone?.replace(/\D/g, '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary"
+              style={{ padding: '0.75rem 2rem', borderRadius: '0.75rem', fontWeight: 700, background: '#10b981', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <Phone size={18} /> Contactar via WhatsApp
+            </a>
+          </div>
         </div>
       </div>
     </div>

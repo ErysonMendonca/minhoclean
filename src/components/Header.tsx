@@ -19,7 +19,6 @@ export default function Header() {
         <nav style={{ display: 'flex', gap: '2rem', alignItems: 'center' }} className="desktop-nav">
           <Link href="/#servicos" className="nav-link">Serviços</Link>
           <Link href="/#sobre" className="nav-link">Sobre Nós</Link>
-          <Link href="/admin/crm" className="btn btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.9rem' }}>Painel Admin</Link>
         </nav>
 
         {/* Mobile Toggle */}
