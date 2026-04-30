@@ -12,7 +12,7 @@ interface AppContextType {
   login: (password: string) => Promise<boolean>;
   logout: () => void;
   updateFormConfig: (config: FormConfig) => Promise<void>;
-  submitLead: (lead: Omit<Lead, 'id' | 'createdAt' | 'status'>) => Promise<void>;
+  submitLead: (lead: Omit<Lead, 'id' | 'createdAt' | 'status'>) => Promise<Lead | null>;
   updateLeadStatus: (id: string, status: Lead['status']) => Promise<void>;
   loading: boolean;
 }
@@ -136,7 +136,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         createdAt: data.created_at
       };
       setLeads([newLead, ...leads]);
+      return newLead;
     }
+    return null;
   };
 
   const updateLeadStatus = async (id: string, status: Lead['status']) => {

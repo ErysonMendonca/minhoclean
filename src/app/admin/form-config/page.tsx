@@ -5,27 +5,27 @@ import { FormField } from '@/lib/types';
 import { Eye, EyeOff, CheckSquare, Square, Trash2, Plus } from 'lucide-react';
 
 export default function FormConfigPage() {
-  const { formConfig, setFormConfig } = useApp();
+  const { formConfig, updateFormConfig } = useApp();
 
   const toggleEnabled = (id: string) => {
     const newFields = formConfig.fields.map(f => 
       f.id === id ? { ...f, enabled: !f.enabled } : f
     );
-    setFormConfig({ ...formConfig, fields: newFields });
+    updateFormConfig({ ...formConfig, fields: newFields });
   };
 
   const toggleRequired = (id: string) => {
     const newFields = formConfig.fields.map(f => 
       f.id === id ? { ...f, required: !f.required } : f
     );
-    setFormConfig({ ...formConfig, fields: newFields });
+    updateFormConfig({ ...formConfig, fields: newFields });
   };
 
   const updateLabel = (id: string, label: string) => {
     const newFields = formConfig.fields.map(f => 
       f.id === id ? { ...f, label } : f
     );
-    setFormConfig({ ...formConfig, fields: newFields });
+    updateFormConfig({ ...formConfig, fields: newFields });
   };
 
   return (

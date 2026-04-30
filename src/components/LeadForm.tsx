@@ -11,7 +11,7 @@ interface LeadFormProps {
 }
 
 export default function LeadForm({ serviceType }: LeadFormProps) {
-  const { formConfig, addLead } = useApp();
+  const { formConfig, submitLead } = useApp();
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -20,23 +20,25 @@ export default function LeadForm({ serviceType }: LeadFormProps) {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Add lead to state (and localstorage)
-    const newLead = addLead({
+    // Add lead to Supabase
+    const newLead = await submitLead({
       serviceType,
       data: formData,
     });
 
-    // Format data for WhatsApp to pass to thank you page
-    const queryParams = new URLSearchParams({
-      id: newLead.id,
-      service: serviceType,
-      ...formData
-    });
+    if (newLead) {
+      // Format data for thank you page
+      const queryParams = new URLSearchParams({
+        id: newLead.id,
+        service: serviceType,
+        ...formData
+      });
 
-    // Short delay for effect
-    setTimeout(() => {
       router.push(`/obrigado?${queryParams.toString()}`);
-    }, 1000);
+    } else {
+      setIsSubmitting(false);
+      alert('Ocorreu um erro ao enviar o seu pedido. Por favor, tente novamente.');
+    }
   };
 
   const handleChange = (id: string, value: string) => {
