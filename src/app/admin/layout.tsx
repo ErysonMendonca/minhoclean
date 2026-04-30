@@ -39,7 +39,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'transparent' }}>
       {/* Mobile Header */}
-      <header className="glass" style={{ 
+      <header className="glass mobile-header" style={{ 
         display: 'none', 
         padding: '1rem 1.5rem', 
         justifyContent: 'space-between', 
@@ -49,7 +49,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         zIndex: 100,
         borderBottom: '1px solid var(--border)',
         borderRadius: 0
-      }} className="mobile-header">
+      }}>
         <h1 style={{ fontSize: '1.2rem', fontWeight: 800, margin: 0, color: 'var(--primary)' }}>MinhoClean Admin</h1>
         <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ color: 'var(--primary)' }}>
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
