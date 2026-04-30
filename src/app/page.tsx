@@ -1,11 +1,13 @@
 'use client';
 
-import { SERVICES } from '@/lib/types';
+import { useApp } from '@/lib/store';
+import { Service } from '@/lib/types';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, ShieldCheck, Clock, Star, Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle, ShieldCheck, Clock, Star, Sparkles } from 'lucide-react';
 import Reveal from '@/components/Reveal';
 
 export default function Home() {
+  const { services } = useApp();
   return (
     <div>
       {/* Hero Section */}
@@ -84,7 +86,7 @@ export default function Home() {
                 border: '1px solid rgba(255,255,255,0.5)'
               }}>
                 <div style={{ background: 'var(--accent)', color: 'white', padding: '0.75rem', borderRadius: '1rem' }}>
-                  <CheckCircle2 size={28} />
+                  <CheckCircle size={28} />
                 </div>
                 <div>
                   <div style={{ fontWeight: 800, fontSize: '1.5rem', lineHeight: 1 }}>100%</div>
@@ -108,21 +110,106 @@ export default function Home() {
             </div>
           </Reveal>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem' }}>
-            {SERVICES.map((service, index) => (
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
+            gap: '2.5rem',
+            maxWidth: '1200px',
+            margin: '0 auto'
+          }}>
+            {services.map((service, index) => (
               <Reveal key={service.id} delay={index * 100}>
-                <div style={{ padding: '2.5rem' }} className="service-card">
-                  <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>{service.title}</h3>
-                  <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', minHeight: '80px' }}>{service.description}</p>
-                  <ul style={{ listStyle: 'none', marginBottom: '2rem' }}>
-                    {service.features.map((feature, i) => (
-                      <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', fontSize: '0.95rem' }}>
-                        <CheckCircle2 size={16} className="text-accent" />
+                <div style={{ 
+                  backgroundColor: 'white',
+                  borderRadius: '2.5rem',
+                  padding: '3rem 2rem 2.5rem', 
+                  border: '2px solid #cbd5e1', // Darker border
+                  boxShadow: '0 10px 30px -10px rgba(0, 0, 0, 0.04)',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  maxWidth: '380px',
+                  margin: '0 auto',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.boxShadow = '0 20px 40px -15px rgba(0, 0, 0, 0.1)';
+                  e.currentTarget.style.borderColor = 'rgba(16, 185, 129, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 10px 30px -10px rgba(0, 0, 0, 0.04)';
+                  e.currentTarget.style.borderColor = '#cbd5e1';
+                }}
+                >
+                  <h3 className="text-gradient" style={{ 
+                    fontSize: '1.65rem', 
+                    fontWeight: 800, 
+                    marginBottom: '1.25rem', 
+                    textAlign: 'center',
+                    lineHeight: 1.2
+                  }}>
+                    {service.title}
+                  </h3>
+                  
+                  <p style={{ 
+                    color: '#64748b', 
+                    marginBottom: '2rem', 
+                    fontSize: '0.95rem',
+                    lineHeight: '1.6',
+                    textAlign: 'center',
+                    padding: '0 0.5rem'
+                  }}>
+                    {service.description}
+                  </p>
+
+                  <ul style={{ 
+                    listStyle: 'none', 
+                    padding: 0, 
+                    margin: '0 0 2.5rem 0',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.85rem'
+                  }}>
+                    {service.features.map((feature, idx) => (
+                      <li key={idx} style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '0.75rem',
+                        fontSize: '0.95rem',
+                        fontWeight: 500,
+                        color: '#334155'
+                      }}>
+                        <CheckCircle size={18} style={{ color: '#0fb981', flexShrink: 0 }} />
                         <span>{feature}</span>
                       </li>
                     ))}
                   </ul>
-                  <Link href={`/servicos/${service.id}`} className="btn btn-primary" style={{ width: '100%' }}>
+
+                  <Link 
+                    href={`/servicos/${service.id}`}
+                    style={{ 
+                      marginTop: 'auto',
+                      backgroundColor: '#0f172a',
+                      color: 'white',
+                      borderRadius: '1.5rem',
+                      padding: '1rem 1.5rem',
+                      fontSize: '1rem',
+                      fontWeight: 700,
+                      textAlign: 'center',
+                      border: 'none',
+                      display: 'inline-block',
+                      width: 'fit-content',
+                      margin: '0 auto',
+                      transition: 'transform 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                  >
                     Solicitar Orçamento
                   </Link>
                 </div>

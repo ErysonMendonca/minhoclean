@@ -23,13 +23,32 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const menuItems = [
     { name: 'CRM / Kanban', href: '/admin/crm', icon: LayoutDashboard },
-    { name: 'Configurar Formulário', href: '/admin/form-config', icon: Settings },
+    { name: 'Gerir Serviços', href: '/admin/services', icon: ListTodo },
+    { name: 'Configurações Sistema', href: '/admin/settings', icon: Settings },
   ];
 
+  // If it's the login page, don't show the sidebar or the flex container
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
+  }
+
   return (
-    <div style={{ display: 'flex', minHeight: 'calc(100vh - 80px)', backgroundColor: 'var(--bg-alt)' }}>
+    <div style={{ display: 'flex', minHeight: 'calc(100vh - 80px)', backgroundColor: 'transparent', position: 'relative' }}>
+      {/* Overlay to soften background distraction */}
+      <div style={{ 
+        position: 'fixed', 
+        top: 0, 
+        left: 0, 
+        right: 0, 
+        bottom: 0, 
+        backgroundColor: 'rgba(224, 242, 254, 0.7)', // Light blue tint
+        backdropFilter: 'blur(3px)', // Subtle blur to soften bubbles
+        zIndex: -1,
+        pointerEvents: 'none'
+      }} />
+      
       {/* Sidebar */}
-      <aside style={{ width: '280px', backgroundColor: 'white', borderRight: '1px solid var(--border)', padding: '2rem 1.5rem' }}>
+      <aside className="glass" style={{ width: '280px', borderRight: '1px solid var(--border)', padding: '2rem 1.5rem', display: 'flex', flexDirection: 'column', borderRadius: 0, borderTop: 'none', borderBottom: 'none', borderLeft: 'none', position: 'relative', zIndex: 10 }}>
         <div style={{ marginBottom: '2.5rem' }}>
           <h2 style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.05em', marginBottom: '1.5rem' }}>Menu Administrativo</h2>
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

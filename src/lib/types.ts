@@ -1,13 +1,23 @@
 export type ServiceType = 'domestic' | 'business' | 'post-construction';
 
+export interface Service {
+  id: string;
+  title: string;
+  description: string;
+  features: string[];
+  icon_name?: string;
+  form_config: FormConfig; // Now mandatory per service
+  created_at?: string;
+}
+
 export interface FormField {
   id: string;
   label: string;
-  type: 'text' | 'email' | 'tel' | 'textarea' | 'select';
+  type: 'text' | 'email' | 'tel' | 'textarea' | 'select' | 'checkbox' | 'radio' | 'number';
   required: boolean;
   enabled: boolean;
   placeholder?: string;
-  options?: string[]; // For select fields
+  options?: string[]; // For select, checkbox, and radio
 }
 
 export interface FormConfig {

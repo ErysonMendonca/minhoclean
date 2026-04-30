@@ -1,39 +1,48 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Lead, FormConfig } from './types';
+import { Lead, FormConfig, Service, DEFAULT_FORM_CONFIG } from './types';
 import { supabase } from './supabase';
 import bcrypt from 'bcryptjs';
 
 interface AppContextType {
   leads: Lead[];
+  services: Service[];
   formConfig: FormConfig;
+  settings: any;
   isAuthenticated: boolean;
-  login: (password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   updateFormConfig: (config: FormConfig) => Promise<void>;
   submitLead: (lead: Omit<Lead, 'id' | 'createdAt' | 'status'>) => Promise<Lead | null>;
   updateLeadStatus: (id: string, status: Lead['status']) => Promise<void>;
+  updateServices: (services: Service[]) => Promise<void>;
+  updateServiceFormConfig: (serviceId: string, config: FormConfig) => Promise<void>;
+  updateSettings: (newSettings: any) => Promise<void>;
+  showToast: (message: string, type?: 'success' | 'error') => void;
   loading: boolean;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-const DEFAULT_CONFIG: FormConfig = {
-  fields: [
-    { id: 'name', label: 'Nome Completo', type: 'text', required: true, enabled: true, placeholder: 'Seu nome' },
-    { id: 'email', label: 'E-mail', type: 'email', required: true, enabled: true, placeholder: 'seu@email.com' },
-    { id: 'phone', label: 'Telefone', type: 'tel', required: true, enabled: true, placeholder: '+351 XXX XXX XXX' },
-    { id: 'address', label: 'Morada / Localização', type: 'text', required: true, enabled: true, placeholder: 'Rua, número, cidade' },
-    { id: 'details', label: 'Detalhes Adicionais', type: 'textarea', required: false, enabled: true, placeholder: 'Conte-nos mais sobre a sua necessidade' },
-  ]
-};
-
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [leads, setLeads] = useState<Lead[]>([]);
-  const [formConfig, setFormConfig] = useState<FormConfig>(DEFAULT_CONFIG);
+  const [services, setServices] = useState<Service[]>([]);
+  const [formConfig, setFormConfig] = useState<FormConfig>(DEFAULT_FORM_CONFIG);
+  const [settings, setSettings] = useState<any>({
+    whatsapp: '351912345678',
+    footer_text: 'MinhoClean - Serviços Profissionais de Limpeza.',
+    footer_address: 'Braga, Portugal',
+    footer_email: 'geral@minhoclean.pt'
+  });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
+
+  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   // Initial Load
   useEffect(() => {
@@ -51,9 +60,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         .from('form_config')
         .select('config')
         .eq('id', 'default')
-        .single();
+        .maybeSingle();
       
       if (configData) setFormConfig(configData.config);
+
+      // Fetch Services
+      const { data: servicesData } = await supabase
+        .from('services')
+        .select('*')
+        .order('created_at', { ascending: true });
+      
+      if (servicesData) setServices(servicesData);
 
       // Fetch Leads
       const { data: leadsData } = await supabase
@@ -70,6 +87,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           createdAt: l.created_at
         })));
       }
+
+      // Fetch Settings
+      const { data: settingsData } = await supabase
+        .from('settings')
+        .select('*')
+        .single();
+      
+      if (settingsData) setSettings(settingsData);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -77,14 +102,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const login = async (password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      // Find admin user (using username 'admin' for now)
       const { data: user, error } = await supabase
         .from('admin_users')
         .select('password_hash')
-        .eq('username', 'admin')
-        .single();
+        .eq('email', email)
+        .maybeSingle();
 
       if (error || !user) return false;
 
@@ -125,7 +149,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         status: 'new'
       })
       .select()
-      .single();
+      .maybeSingle();
 
     if (!error && data) {
       const newLead: Lead = {
@@ -152,19 +176,98 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateServices = async (newServices: Service[]) => {
+    // Local update
+    setServices(newServices);
+  };
+
+  const updateServiceFormConfig = async (serviceId: string, config: FormConfig) => {
+    const { error } = await supabase
+      .from('services')
+      .update({ form_config: config })
+      .eq('id', serviceId);
+    
+    if (!error) {
+      setServices(services.map(s => s.id === serviceId ? { ...s, form_config: config } : s));
+    }
+  };
+
+  const updateSettings = async (newSettings: any) => {
+    try {
+      const { data, error } = await supabase
+        .from('settings')
+        .upsert({ id: 1, ...newSettings })
+        .select()
+        .single();
+
+      if (!error && data) {
+        setSettings(data);
+        showToast('Configurações guardadas com sucesso!', 'success');
+      } else if (error) {
+        throw error;
+      }
+    } catch (error) {
+      showToast('Erro ao guardar configurações.', 'error');
+      console.error('Error updating settings:', error);
+      throw error;
+    }
+  };
+
   return (
     <AppContext.Provider value={{ 
       leads, 
-      formConfig, 
+      services, 
+      formConfig,
+      settings,
       isAuthenticated, 
       login, 
       logout, 
-      updateFormConfig, 
+      updateFormConfig,
       submitLead, 
       updateLeadStatus,
-      loading
+      updateServices,
+      updateServiceFormConfig,
+      updateSettings,
+      showToast,
+      loading 
     }}>
       {children}
+
+      {/* Global Toast Component */}
+      {toast && (
+        <div style={{ 
+          position: 'fixed', 
+          top: '2rem', 
+          right: '2rem', 
+          zIndex: 9999,
+          animation: 'slideIn 0.3s ease-out forwards'
+        }}>
+          <div style={{ 
+            padding: '1rem 2rem', 
+            borderRadius: '1rem', 
+            background: toast.type === 'success' ? '#10b981' : '#ef4444',
+            color: 'white',
+            fontWeight: 700,
+            boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            backdropFilter: 'blur(8px)',
+            border: '1px solid rgba(255,255,255,0.2)'
+          }}>
+            <div style={{ background: 'rgba(255,255,255,0.2)', padding: '0.25rem', borderRadius: '50%', display: 'flex' }}>
+              {toast.type === 'success' ? <span style={{ fontSize: '1rem' }}>✓</span> : <span style={{ fontSize: '1rem' }}>✕</span>}
+            </div>
+            {toast.message}
+          </div>
+          <style>{`
+            @keyframes slideIn {
+              from { transform: translateX(100%); opacity: 0; }
+              to { transform: translateX(0); opacity: 1; }
+            }
+          `}</style>
+        </div>
+      )}
     </AppContext.Provider>
   );
 }
