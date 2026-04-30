@@ -98,7 +98,7 @@ export default function LeadForm({ serviceType, fields }: LeadFormProps) {
             style={{ height: '3.5rem', padding: '0 1.5rem', borderRadius: '1rem', border: '2px solid #e2e8f0', outline: 'none', fontSize: '1rem', fontWeight: 600 }}
           />
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+        <div className="contact-grid">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
             <label style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--primary)', textTransform: 'uppercase' }}>Telemóvel <span style={{ color: '#ef4444' }}>*</span></label>
             <input 
@@ -106,7 +106,7 @@ export default function LeadForm({ serviceType, fields }: LeadFormProps) {
               required 
               placeholder="Ex: 912345678"
               onChange={(e) => handleChange('customer_phone', e.target.value)}
-              style={{ height: '3.5rem', padding: '0 1.5rem', borderRadius: '1rem', border: '2px solid #e2e8f0', outline: 'none', fontSize: '1rem', fontWeight: 600 }}
+              style={{ height: '3.5rem', padding: '0 1.5rem', borderRadius: '1rem', border: '2px solid #e2e8f0', outline: 'none', fontSize: '1rem', fontWeight: 600, width: '100%' }}
             />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
@@ -116,12 +116,12 @@ export default function LeadForm({ serviceType, fields }: LeadFormProps) {
               required 
               placeholder="Ex: joao@email.com"
               onChange={(e) => handleChange('customer_email', e.target.value)}
-              style={{ height: '3.5rem', padding: '0 1.5rem', borderRadius: '1rem', border: '2px solid #e2e8f0', outline: 'none', fontSize: '1rem', fontWeight: 600 }}
+              style={{ height: '3.5rem', padding: '0 1.5rem', borderRadius: '1rem', border: '2px solid #e2e8f0', outline: 'none', fontSize: '1rem', fontWeight: 600, width: '100%' }}
             />
           </div>
         </div>
       </div>
-      
+
       <div style={{ 
         display: 'flex', 
         flexDirection: 'column', 
@@ -129,7 +129,7 @@ export default function LeadForm({ serviceType, fields }: LeadFormProps) {
         maxHeight: '500px',
         overflowY: 'auto',
         paddingRight: '1rem',
-        marginBottom: '1.5rem',
+        marginBottom: '2rem',
         scrollbarWidth: 'thin',
         scrollbarColor: 'var(--accent) transparent'
       }}>
@@ -143,7 +143,6 @@ export default function LeadForm({ serviceType, fields }: LeadFormProps) {
               <div style={{ position: 'relative' }}>
                 <select
                   required={field.required}
-                  className="input"
                   onChange={(e) => handleChange(field.id, e.target.value)}
                   style={{ 
                     width: '100%',
@@ -153,9 +152,10 @@ export default function LeadForm({ serviceType, fields }: LeadFormProps) {
                     borderRadius: '1.25rem',
                     border: '2px solid #e2e8f0',
                     fontSize: '1rem',
-                    fontWeight: 500,
+                    fontWeight: 600,
                     cursor: 'pointer',
-                    background: 'white'
+                    background: 'white',
+                    outline: 'none'
                   }}
                 >
                   <option value="">Selecione uma opção...</option>
@@ -168,35 +168,18 @@ export default function LeadForm({ serviceType, fields }: LeadFormProps) {
                 </div>
               </div>
             ) : field.type === 'checkbox' ? (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem', marginTop: '0.25rem' }}>
+              <div className="options-grid">
                 {field.options?.map((opt: string) => {
                   const isChecked = (formData[field.id] as string[])?.includes(opt);
                   return (
-                    <label key={opt} style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '0.75rem', 
-                      fontSize: '0.9rem', 
-                      fontWeight: 600,
-                      padding: '0.85rem 1rem',
-                      borderRadius: '1.25rem',
+                    <label key={opt} className={`option-card ${isChecked ? 'active' : ''}`} style={{
                       border: `2px solid ${isChecked ? 'var(--accent)' : '#e2e8f0'}`,
-                      background: isChecked ? 'rgba(16, 185, 129, 0.05)' : 'white',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
+                      background: isChecked ? 'rgba(16, 185, 129, 0.05)' : 'white'
                     }}>
-                      <div style={{ 
-                        width: '20px', 
-                        height: '20px', 
-                        borderRadius: '6px', 
+                      <div className="check-indicator" style={{
                         border: `2px solid ${isChecked ? 'var(--accent)' : '#cbd5e1'}`,
                         background: isChecked ? 'var(--accent)' : 'transparent',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        transition: 'all 0.2s',
-                        flexShrink: 0
+                        color: 'white'
                       }}>
                         {isChecked && <Send size={12} style={{ transform: 'rotate(-45deg)' }} />}
                       </div>
@@ -205,40 +188,23 @@ export default function LeadForm({ serviceType, fields }: LeadFormProps) {
                         style={{ display: 'none' }}
                         onChange={(e) => handleCheckboxChange(field.id, opt, e.target.checked)}
                       />
-                      <span style={{ color: isChecked ? 'var(--primary)' : '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{opt}</span>
+                      <span style={{ color: isChecked ? 'var(--primary)' : '#64748b' }}>{opt}</span>
                     </label>
                   );
                 })}
               </div>
             ) : field.type === 'radio' ? (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem', marginTop: '0.25rem' }}>
+              <div className="options-grid">
                 {field.options?.map((opt: string) => {
                   const isSelected = formData[field.id] === opt;
                   return (
-                    <label key={opt} style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '0.75rem', 
-                      fontSize: '0.9rem', 
-                      fontWeight: 600,
-                      padding: '0.85rem 1rem',
-                      borderRadius: '1.25rem',
+                    <label key={opt} className={`option-card ${isSelected ? 'active' : ''}`} style={{
                       border: `2px solid ${isSelected ? 'var(--accent)' : '#e2e8f0'}`,
-                      background: isSelected ? 'rgba(16, 185, 129, 0.05)' : 'white',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
+                      background: isSelected ? 'rgba(16, 185, 129, 0.05)' : 'white'
                     }}>
-                      <div style={{ 
-                        width: '20px', 
-                        height: '20px', 
-                        borderRadius: '50%', 
+                      <div className="radio-indicator" style={{
                         border: `2px solid ${isSelected ? 'var(--accent)' : '#cbd5e1'}`,
-                        background: 'white',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        transition: 'all 0.2s',
-                        flexShrink: 0
+                        background: 'white'
                       }}>
                         {isSelected && <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--accent)' }} />}
                       </div>
@@ -249,7 +215,7 @@ export default function LeadForm({ serviceType, fields }: LeadFormProps) {
                         required={field.required}
                         onChange={() => handleChange(field.id, opt)}
                       />
-                      <span style={{ color: isSelected ? 'var(--primary)' : '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{opt}</span>
+                      <span style={{ color: isSelected ? 'var(--primary)' : '#64748b' }}>{opt}</span>
                     </label>
                   );
                 })}
@@ -258,7 +224,6 @@ export default function LeadForm({ serviceType, fields }: LeadFormProps) {
               <textarea
                 required={field.required}
                 placeholder={`Escreva aqui...`}
-                className="input"
                 rows={4}
                 onChange={(e) => handleChange(field.id, e.target.value)}
                 style={{ 
@@ -266,19 +231,19 @@ export default function LeadForm({ serviceType, fields }: LeadFormProps) {
                   borderRadius: '1.25rem',
                   border: '2px solid #e2e8f0',
                   fontSize: '1rem',
-                  fontWeight: 500,
+                  fontWeight: 600,
                   outline: 'none',
-                  minHeight: '100px',
+                  minHeight: '120px',
                   background: 'white',
-                  width: '100%'
+                  width: '100%',
+                  resize: 'none'
                 }}
               />
             ) : (
               <input
                 type={field.type}
                 required={field.required}
-                placeholder={`Insira seu ${field.label.toLowerCase()}`}
-                className="input"
+                placeholder={`Insira aqui...`}
                 onChange={(e) => handleChange(field.id, e.target.value)}
                 style={{ 
                   height: '3.75rem',
@@ -286,7 +251,7 @@ export default function LeadForm({ serviceType, fields }: LeadFormProps) {
                   borderRadius: '1.25rem',
                   border: '2px solid #e2e8f0',
                   fontSize: '1rem',
-                  fontWeight: 500,
+                  fontWeight: 600,
                   outline: 'none',
                   background: 'white',
                   width: '100%'
@@ -310,17 +275,64 @@ export default function LeadForm({ serviceType, fields }: LeadFormProps) {
           boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.4)',
           transition: 'all 0.3s'
         }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'translateY(-2px)';
-          e.currentTarget.style.boxShadow = '0 15px 30px -5px rgba(16, 185, 129, 0.5)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'translateY(0)';
-          e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(16, 185, 129, 0.4)';
-        }}
       >
         {isSubmitting ? 'A processar...' : 'Confirmar Pedido'}
       </button>
+
+      <style jsx>{`
+        .contact-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1.5rem;
+        }
+        .options-grid {
+          display: grid; 
+          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+          gap: 0.75rem; 
+          margin-top: 0.25rem;
+        }
+        .option-card {
+          display: flex; 
+          align-items: center; 
+          gap: 0.75rem; 
+          font-size: 0.9rem; 
+          font-weight: 700;
+          padding: 1rem 1.25rem;
+          border-radius: 1.25rem;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .check-indicator, .radio-indicator {
+          width: 20px; 
+          height: 20px; 
+          flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s;
+        }
+        .check-indicator {
+          border-radius: 6px;
+        }
+        .radio-indicator {
+          border-radius: 50%;
+        }
+        @media (max-width: 640px) {
+          .contact-grid {
+            grid-template-columns: 1fr;
+          }
+          .options-grid {
+            grid-template-columns: 1fr;
+          }
+          form {
+            padding: 1.5rem !important;
+            border-radius: 1.5rem !important;
+          }
+          h3 {
+            font-size: 1.5rem !important;
+          }
+        }
+      `}</style>
     </form>
   );
 }
