@@ -8,6 +8,10 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "MinhoClean | Serviços de Limpeza Profissional",
   description: "Limpeza doméstica, empresarial e pós-obra com excelência e confiança.",
+  icons: {
+    icon: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

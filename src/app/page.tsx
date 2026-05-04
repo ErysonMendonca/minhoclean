@@ -3,6 +3,7 @@
 import { useApp } from '@/lib/store';
 import { Service } from '@/lib/types';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, CheckCircle, ShieldCheck, Clock, Star, Sparkles } from 'lucide-react';
 import Reveal from '@/components/Reveal';
 
@@ -54,7 +55,15 @@ export default function Home() {
                   textAlign: 'center',
                   padding: '2rem'
                 }}>
-                  <Sparkles size={80} className="mobile-hide" style={{ marginBottom: '2rem', opacity: 0.8 }} />
+                  <div className="mobile-hide" style={{ marginBottom: '2rem' }}>
+                    <Image 
+                      src="/logo.svg" 
+                      alt="MinhoClean Logo" 
+                      width={240} 
+                      height={80} 
+                      style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)' }} 
+                    />
+                  </div>
                   <h3 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '1rem' }}>Brilho Profissional</h3>
                   <p style={{ opacity: 0.8, maxWidth: '300px' }}>Equipamentos de ponta e produtos ecológicos para o melhor resultado.</p>
                 </div>

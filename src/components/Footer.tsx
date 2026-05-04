@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Sparkles, Phone, Mail, MapPin } from 'lucide-react';
+import Image from 'next/image';
+import { Phone, Mail, MapPin } from 'lucide-react';
 import { useApp } from '@/lib/store';
 
 export default function Footer() {
@@ -12,9 +13,14 @@ export default function Footer() {
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, fontSize: '1.5rem', color: 'white', marginBottom: '1.5rem' }}>
-              <Sparkles className="text-accent" />
-              <span>MinhoClean</span>
+            <Link href="/" style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <Image 
+                src="/logo.svg" 
+                alt="MinhoClean Logo" 
+                width={160} 
+                height={45} 
+                style={{ objectFit: 'contain', filter: 'brightness(0) invert(1)' }} 
+              />
             </Link>
             <p style={{ color: 'rgba(255,255,255,0.6)', maxWidth: '300px', lineHeight: 1.6 }} className="footer-desc">
               {settings?.footer_text || 'Excelência em serviços de limpeza no Minho.'}

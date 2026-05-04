@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Sparkles, Menu, X } from 'lucide-react';
+import Image from 'next/image';
+import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Header() {
@@ -10,9 +11,15 @@ export default function Header() {
   return (
     <header className="glass" style={{ position: 'sticky', top: 0, zIndex: 100, borderBottom: '1px solid var(--border)' }}>
       <div className="container" style={{ height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, fontSize: '1.5rem', color: 'var(--primary)' }}>
-          <Sparkles className="text-accent" />
-          <span>MinhoClean</span>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center' }}>
+          <Image 
+            src="/logo.svg" 
+            alt="MinhoClean Logo" 
+            width={180} 
+            height={50} 
+            style={{ objectFit: 'contain' }}
+            priority
+          />
         </Link>
 
         {/* Desktop Nav */}

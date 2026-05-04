@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { LayoutDashboard, Settings, ListTodo, LogOut, Menu, X } from 'lucide-react';
 import { useApp } from '@/lib/store';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -50,7 +51,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         borderBottom: '1px solid var(--border)',
         borderRadius: 0
       }}>
-        <h1 style={{ fontSize: '1.2rem', fontWeight: 800, margin: 0, color: 'var(--primary)' }}>MinhoClean Admin</h1>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Image 
+            src="/logo.svg" 
+            alt="MinhoClean Logo" 
+            width={120} 
+            height={35} 
+            style={{ objectFit: 'contain' }} 
+          />
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <button 
             onClick={() => {
@@ -84,9 +93,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           transition: 'transform 0.3s ease'
         }} id="admin-sidebar">
           <div style={{ marginBottom: '1.5rem' }} className="sidebar-logo">
-            <h2 style={{ fontSize: '1.3rem', fontWeight: 900, color: 'var(--primary)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              MinhoClean
-            </h2>
+            <div style={{ marginBottom: '0.5rem' }}>
+              <Image 
+                src="/logo.svg" 
+                alt="MinhoClean Logo" 
+                width={180} 
+                height={50} 
+                style={{ objectFit: 'contain' }} 
+              />
+            </div>
             <h2 style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.1em', marginBottom: '1rem' }}>Painel Admin</h2>
             <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {menuItems.map((item) => {

@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useApp } from '@/lib/store';
 import { useRouter } from 'next/navigation';
-import { Lock, Sparkles } from 'lucide-react';
+import Image from 'next/image';
+import { Lock } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -44,10 +45,14 @@ export default function LoginPage() {
         boxShadow: 'var(--shadow-lg)',
         textAlign: 'center'
       }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-          <div style={{ background: 'var(--accent)', color: 'white', padding: '1rem', borderRadius: '1rem' }}>
-            <Sparkles size={32} />
-          </div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}>
+          <Image 
+            src="/logo.svg" 
+            alt="MinhoClean Logo" 
+            width={200} 
+            height={60} 
+            style={{ objectFit: 'contain' }} 
+          />
         </div>
         
         <h1 style={{ fontSize: '1.75rem', marginBottom: '0.5rem', fontWeight: 700 }}>Painel Admin</h1>
